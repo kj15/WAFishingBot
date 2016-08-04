@@ -10,7 +10,7 @@ import scrapy
 class LakesItem(scrapy.Item):
         name = scrapy.Field()
         fish = scrapy.Field()
-        altitutde = scrapy.Field()
+        alt = scrapy.Field()
         size = scrapy.Field()
         latitude = scrapy.Field()
         longitude = scrapy.Field()

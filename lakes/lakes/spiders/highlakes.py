@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, sys, scrapy, re
 
-#import LakeItem, StockingItem
+from lakes.items import LakesItem
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 
@@ -23,18 +23,23 @@ class HighlakesSpider(scrapy.Spider):
     # )
 
     def parse(self, response):
-        counties = response.xpath("//div[@class='highlakesinfo']")
-        print counties
-        for lake in counties:
+        for lake in response.xpath("//div[@class='highlakesinfo']/div"):
             # if no links under this lake, cant get stocking data
-            if len(lake.xpath("//a").extract()) == 0:
-                lake_item = LakeItem()
+            if len(lake.xpath(".//em")) != 0:
+                lake_item = LakesItem()
+                lake_item['name'] = lake.xpath(".//strong/text()").extract()
                 lake_item['stocking_info'] = None
-                lake_item['name'] = lake.xpath("//strong/text()").extract()[0]
-                lake_item['fish'] = lake.xpath("//td[@colspan='3']/text()").extract()[0]
-                lake_item['altitude'] = re.sub(r'[^\d]', '', lake.xpath("/table/tbody/tr[2]/td[1]").extract()[0])
-                lake_item['size'] = re.sub(r'[^\d]', '', lake.xpath("/table/tbody/tr[2]/td[2]").extract()[0])
-                lake_item['latitude'] = re.sub(r'[^\d\.]', '', lake.xpath("///table/tbody/tr[1]/td[2]/text()[1]").extract()[0])
-                lake_item['longitude'] = re.sub(r'[^\d\.]', '', lake.xpath("///table/tbody/tr[1]/td[2]/text()[1]").extract()[0])
-                lake_item['county'] = lake.xpath("/table/tbody/tr[2]/td[0]").extract()[0]
+                data = lake.xpath(".//td[@valign='top']/text()").extract()
+                lake_item['county'] = data[1]
+                lake_item['alt'] = re.sub(r'[^\d]', '', data[2])
+                lake_item['size'] = re.sub(r'[^\d\.]', '', data[3])
+                lake_item['fish'] = data[4]
+                lat_long = lake.xpath(".//td[@rowspan='3']/text()")
+                lake_item['latitude'] = re.sub(r'[^\d\.]', '', lat_long[0].extract())
+                lake_item['longitude'] =  re.sub(r'[^\d\.]', '', lat_long[1].extract())
+                yield lake_item
         pass
+
+
+    def is_digit(self, test):
+        return re.match(r'\d', test)
