@@ -5,11 +5,15 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+import scrapy, datetime
+
+class StockingItem():
+        fish = ''
+        date = datetime.date(1969,6,9)
+        amt = 0
 
 class LakesItem(scrapy.Item):
         name = scrapy.Field()
-        fish = scrapy.Field()
         alt = scrapy.Field()
         size = scrapy.Field()
         latitude = scrapy.Field()
