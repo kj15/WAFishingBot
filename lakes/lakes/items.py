@@ -7,10 +7,13 @@
 
 import scrapy, datetime
 
-class StockingItem():
+class StockingItem(object):
         fish = ''
         date = datetime.date(1969,6,9)
         amt = 0
+
+        def __str__(self):
+                return self.fish + ": " + str(self.date) + "__" + self.amt
 
 class LakesItem(scrapy.Item):
         name = scrapy.Field()
