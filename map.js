@@ -1,9 +1,18 @@
-
+var markers = [];
 var infoWindowContent = [];
 var infoWindow = new google.maps.InfoWindow();
 var map;
 
 var lakes = [];
+
+var filters = {
+	search: "",
+	county : "",
+	min_size: 0,
+	max_size: 0,
+	min_alt: 0,
+	max_alt: 0,
+}
 
 function initialize() {
 
@@ -32,8 +41,10 @@ function plot() {
         var marker = new google.maps.Marker({
             position: latLng,
             map: map,
-            title: data.name
+            title: data.name,
+			data: data
         });
+		markers.push(marker);
 		var content = '<h2>' + data.name + '</h2><br/><p>' + data.alt + ' ft</p><br/><p>' + data.size + ' acres</p><br/><p>Last stocked: <bold>' + data.last_stocked_date + '</bold></p><br/><p>Last stocked amount: <bold>' + data.last_stocked_amt + '</bold></p>'
 	    marker.addListener('click', function() {
           infoWindow.setContent(content)
@@ -41,8 +52,61 @@ function plot() {
         });	  
     });
 }
-  
+
+function filter() {
+	var i = j = k = 0;
+	$.each(markers, function(key, marker) {
+		switch(true) {
+			//county
+			case filters.county_list != "" && filters.county_list + " County"!= marker.data.county:
+				i++;
+				marker.setVisible(false);
+				break;
+				
+			//size	
+			case parseFloat(filters.min_size) > parseFloat(marker.data.size):
+			case parseFloat(filters.max_size) < parseFloat(marker.data.size):
+				j++;
+				marker.setVisible(false);
+				break;
+			
+			//altitude
+			case parseInt(filters.min_alt) > parseInt(marker.data.alt):
+			case parseInt(filters.max_alt) < parseInt(marker.data.alt):
+				k++;
+				marker.setVisible(false);
+				break;
+				
+			default:
+				marker.setVisible(true);
+				break;
+		}	
+	});
+	console.log(i);
+	console.log(j);
+	console.log(k);
+}
+
+
 google.maps.event.addDomListener(window, 'load', initialize);
 
-
+$( document ).ready(function() {
+    
+	//bindings
+	$("#submit").click(function(){
+		filters.search = $("#lake_name").val();
+		filters.county_list = $("#county_list").val();
+		filters.min_size = $("#size_min").val();
+		filters.max_size = $("#size_max").val();
+		filters.min_alt = $("#height_min").val();
+		filters.max_alt = $("#height_max").val();
+		console.log(filters);
+		filter();
+	});
+	
+	$("#county_list").click(function(){
+		$(this).removeAttr('value');
+	});
+	
+});
 
