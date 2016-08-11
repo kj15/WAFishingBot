@@ -11,8 +11,50 @@
 </head>
 <body>
 <div id="filter_bar">
-	<div id="search_container">
-		
+	<div class="inner" id="search_container">
+	<p>Lake name:</p>
+		<input type="text" name="lake_name">
+	</div>
+	
+	<div class="inner" id="county_container">
+	<p>Lake county:</p>
+		<input list="counties" name="county_list">
+		<datalist id="counties">
+			<option value="Chelan">
+			<option value="Clallam">
+			<option value="Cowlitz">
+			<option value="Grays Harbor">
+			<option value="Jefferson">
+			<option value="King">
+			<option value="Kittitas">
+			<option value="Lewis">
+			<option value="Mason">
+			<option value="Okanogan">
+			<option value="Pierce">
+			<option value="Skagit">
+			<option value="Skamania">
+			<option value="Snohomish">
+			<option value="Whatcom">
+			<option value="Yakima">
+		</datalist>
+	</div>
+	
+	<div class="inner" id="size_container">
+		<p>Min size:</p>
+		<input type="text" name="size_min" value="0">
+		<p>Max size:</p>
+		<input type="text" name="size_max" value="1000">
+	</div>
+	
+	<div class="inner" id="alt_container">
+		<p>Min height:</p>
+		<input type="text" name="height_min" value="0">
+		<p>Max height:</p>
+		<input type="text" name="height_max" value="10000">
+	</div>
+	
+	<div class="inner" id="submit_container">
+		<input id="submit" type="image" src="img/search.png">
 	</div>
 </div>
 <div id="map-canvas"></div>

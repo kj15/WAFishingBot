@@ -1,7 +1,8 @@
-var markers = [];
+
 var infoWindowContent = [];
 var infoWindow = new google.maps.InfoWindow();
 var map;
+
 var lakes = [];
 
 function initialize() {
@@ -33,13 +34,11 @@ function plot() {
             map: map,
             title: data.name
         });
-		markers.push(marker);
 		var content = '<h2>' + data.name + '</h2><br/><p>' + data.alt + ' ft</p><br/><p>' + data.size + ' acres</p><br/><p>Last stocked: <bold>' + data.last_stocked_date + '</bold></p><br/><p>Last stocked amount: <bold>' + data.last_stocked_amt + '</bold></p>'
 	    marker.addListener('click', function() {
           infoWindow.setContent(content)
 		  infoWindow.open(map, marker);
-        });
-	  
+        });	  
     });
 }
   
