@@ -28,7 +28,7 @@ class HighlakesSpider(scrapy.Spider):
             # if no links under this lake, cant get stocking data
             if len(lake.xpath(".//em")) != 0:
                 lake_item['name'] = lake.xpath(".//strong/text()").extract()
-                lake_item['stocking_info'] = []
+                # lake_item['stocking_info'] = []
                 data = lake.xpath(".//td[@valign='top']/text()").extract()
                 lake_item['county'] = data[1]
                 lake_item['alt'] = re.sub(r'[^\d]', '', data[2])
@@ -54,24 +54,22 @@ class HighlakesSpider(scrapy.Spider):
         lake_item['county'] = td_data[-3]
         lake_item['latitude'] = re.sub(r'[^\d\.\-]', '', p_data[1])
         lake_item['longitude'] = re.sub(r'[^\d\.\-]', '', p_data[2])
-    #for i in td_data[0:]:
-
-        stocked = []
-        i = -1
-        for fish in response.xpath("//table[@cellspacing='2']//strong"):
-            i+=2
-            while td_data[i] != u'\xa0' and td_data[i+1] != u'\xa0':
-                stock = StockingItem()
-                stock.fish = fish.xpath("./text()").extract()[0]
-                stock.date = datetime.datetime.strptime(str(td_data[i]), '%b %d, %Y')
-                stock.amt = td_data[i+1]
-                stocked.append(str(stock))
-                i+=2
 
 
-
-
-        lake_item['stocking_info'] = stocked
+        lake_item['last_stocked_date'] = td_data[1]
+        lake_item['last_stocked_amt'] = td_data[2]
+        # stocked = []
+        # i = -1
+        # for fish in response.xpath("//table[@cellspacing='2']//strong"):
+        #     i+=2
+        #     while td_data[i] != u'\xa0' and td_data[i+1] != u'\xa0':
+        #         stock = StockingItem()
+        #         stock.fish = fish.xpath("./text()").extract()[0]
+        #         stock.date = datetime.datetime.strptime(str(td_data[i]), '%b %d, %Y')
+        #         stock.amt = td_data[i+1]
+        #         stocked.append(str(stock))
+        #         i+=2
+        # lake_item['stocking_info'] = stocked
         yield lake_item
 
     def is_digit(self, test):

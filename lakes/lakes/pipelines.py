@@ -9,7 +9,8 @@ from scrapy.exceptions import DropItem
 
 class NoListsPipeline(object):
     def __init__(self):
-        self.allowed_fields = ["stocking_info"]
+        # self.allowed_fields = ["stocking_info"]
+        self.allowed_fields = []
 
     def process_item(self, item, spider):
         for k, v in item.iteritems():

@@ -22,6 +22,9 @@ class LakesItem(scrapy.Item):
         latitude = scrapy.Field()
         longitude = scrapy.Field()
         county = scrapy.Field()
-        stocking_info = scrapy.Field()
+
+        # stocking_info = scrapy.Field()
+        last_stocked_date = scrapy.Field()
+        last_stocked_amt = scrapy.Field()
         
         
