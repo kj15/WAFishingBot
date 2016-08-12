@@ -36,6 +36,7 @@ class HighlakesSpider(scrapy.Spider):
                 lat_long = lake.xpath(".//td[@rowspan='3']/text()")
                 lake_item['latitude'] = re.sub(r'[^\d\.\-]', '', lat_long[0].extract())
                 lake_item['longitude'] =  re.sub(r'[^\d\.\-]', '', lat_long[1].extract())
+                lake_item['rank'] = 0.0
                 yield lake_item
             else:
                 link = lake.xpath(".//a[contains(@href,'/stocking/')]/@href").extract()
@@ -70,7 +71,30 @@ class HighlakesSpider(scrapy.Spider):
         #         stocked.append(str(stock))
         #         i+=2
         # lake_item['stocking_info'] = stocked
+
+        lake_item = self.rank(lake_item)
         yield lake_item
 
-    def is_digit(self, test):
-        return re.match(r'\d', test)
+    def rank(self, lake_item):
+        amt = float(str(lake_item['last_stocked_amt']).replace(',', ''))
+        date_stocked = float(lake_item['last_stocked_date'].split(',')[1])
+        size = float(lake_item['size'])
+        alt = float(lake_item['alt'])
+        current_year = float(datetime.date.today().year)
+        cd = float(datetime.datetime.now().timetuple().tm_yday)
+
+        # gavin has some weird math thing where the currentday value begins at sep1 (0) and ends at aug31 (365)
+        # so 244 -> 0 and 243 -> 365
+        if cd >= 244:
+            current_day = cd - 244
+        else:
+            current_day = 365 - abs(cd - 243)
+
+
+        stock_val = amt / (size * (current_year - date_stocked))*.2
+        elev_val = 50000/(abs(alt - (.1513 * current_day)**2 + 49.5 * current_day + 5254))
+        fish_rank = 2 * (elev_val)**1./2. + stock_val
+        lake_item['rank'] = fish_rank
+        return lake_item
+
+

@@ -26,5 +26,6 @@ class LakesItem(scrapy.Item):
         # stocking_info = scrapy.Field()
         last_stocked_date = scrapy.Field()
         last_stocked_amt = scrapy.Field()
+        rank = scrapy.Field()
         
         

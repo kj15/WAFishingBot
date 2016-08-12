@@ -14,7 +14,7 @@ class NoListsPipeline(object):
 
     def process_item(self, item, spider):
         for k, v in item.iteritems():
-            if k not in self.allowed_fields and not isinstance(v, basestring):
+            if k not in self.allowed_fields and not isinstance(v, basestring) and not isinstance(v, float):
                 if len(v) > 0:
                     item[k] = v[-1]
                 else:
