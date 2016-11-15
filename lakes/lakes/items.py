@@ -6,26 +6,22 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy, datetime
+from scrapy_djangoitem import DjangoItem
 
-class StockingItem(object):
-        fish = ''
-        date = datetime.date(1969,6,9)
-        amt = 0
+from app.models import Lake, StockingData, County, Fish
 
-        def __str__(self):
-                return self.fish + ": " + str(self.date) + "__" + self.amt
+class StockingDataItem(DjangoItem):
+        django_model = StockingData
 
-class LakesItem(scrapy.Item):
-        name = scrapy.Field()
-        alt = scrapy.Field()
-        size = scrapy.Field()
-        latitude = scrapy.Field()
-        longitude = scrapy.Field()
-        county = scrapy.Field()
+class FishItem(DjangoItem):
+        django_model = Fish
 
-        # stocking_info = scrapy.Field()
-        last_stocked_date = scrapy.Field()
-        last_stocked_amt = scrapy.Field()
-        rank = scrapy.Field()
+class CountyItem(DjangoItem):
+        name=  scrapy.Field()
+
+class LakeItem(DjangoItem):
+        django_model = Lake
+
+
         
         

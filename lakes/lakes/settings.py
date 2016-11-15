@@ -9,6 +9,13 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+import sys,os,django
+abspath = os.path.abspath('../gofish')
+sys.path.append(abspath)
+print abspath
+os.environ['DJANGO_SETTINGS_MODULE'] = 'gofish.settings'
+django.setup()
+
 BOT_NAME = 'lakes'
 
 SPIDER_MODULES = ['lakes.spiders']
