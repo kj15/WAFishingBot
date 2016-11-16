@@ -11,7 +11,7 @@ class AuthorAdmin(admin.ModelAdmin):
 @admin.register(Lake)
 class LakeAdmin(admin.ModelAdmin):
     search_fields = ['name']
-    list_display = ('name', 'url', 'rank', 'county', 'get_stocking')
+    list_display = ('name', 'url', 'rank', 'size', 'altitude', 'county', 'get_stocking')
     list_filter = ['county']
     ordering = ['county']
 

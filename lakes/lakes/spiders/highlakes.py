@@ -127,7 +127,7 @@ class HighlakesSpider(scrapy.Spider):
 
 
         stock_val = amt / (size * (current_year - date_stocked))*.2
-        elev_val = 50000/(abs(alt - (.1513 * current_day)**2 + 49.5 * current_day + 5254))
+        elev_val = 50000/(abs(alt - (.1513   * current_day)**2 + 49.5 * current_day + 5254))
         fish_rank = 2 * (elev_val)**1./2. + stock_val
         lake_item['rank'] = fish_rank
         return lake_item
