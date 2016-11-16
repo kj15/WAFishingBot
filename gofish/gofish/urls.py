@@ -25,5 +25,6 @@ urlpatterns = [
 
     # endpoints
     url(r'api/lakes/all', get_lakes_all),
+    url(r'api/lakes/query', get_lakes_with_query),
 
 ]
