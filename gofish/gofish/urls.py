@@ -19,7 +19,11 @@ from django.contrib import admin
 from app.views import *
 
 urlpatterns = [
+    # pages
     url(r'^admin/', admin.site.urls),
-    url(r'^$', MapView.as_view(), name='map')
+    url(r'^$', MapView.as_view(), name='map'),
+
+    # endpoints
+    url(r'api/lakes/all', get_lakes_all),
 
 ]
