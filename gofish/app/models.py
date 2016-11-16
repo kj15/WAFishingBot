@@ -38,6 +38,7 @@ class Fish(models.Model):
 
 class StockingData(models.Model):
     id = models.AutoField(primary_key=True)
+    url = models.CharField(max_length=1000)
     date = models.DateField(blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
     fish = models.ForeignKey(Fish, on_delete=models.CASCADE)

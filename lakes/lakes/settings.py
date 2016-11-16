@@ -69,7 +69,8 @@ USER_AGENT = '(+http://www.fucktheparkrangers.com)'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'lakes.pipelines.NoListsPipeline': 100,
+   'lakes.pipelines.TypeFormattingPipeline': 100,
+   'lakes.pipelines.SavePipeline': 500,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

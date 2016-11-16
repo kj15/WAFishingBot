@@ -3,6 +3,7 @@ import os, sys, scrapy, re, datetime, json
 import django
 
 from lakes.items import LakeItem, StockingDataItem, FishItem, CountyItem
+from app.models import Lake, County, Fish
 from scrapy.contrib.spiders import CrawlSpider, Rule, Request
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 
@@ -31,7 +32,8 @@ class HighlakesSpider(scrapy.Spider):
                 lake_item['name'] = lake.xpath(".//strong/text()").extract()
                 # lake_item['stocking_info'] = []
                 data = lake.xpath(".//td[@valign='top']/text()").extract()
-                lake_item['county'] = data[1]
+                lake_item['county'] = self.process_county(data[1])
+                lake_item['url'] = response.url
                 lake_item['altitude'] = re.sub(r'[^\d]', '', data[2])
                 lake_item['size'] = re.sub(r'[^\d\.]', '', data[3])
                 lat_long = lake.xpath(".//td[@rowspan='3']/text()")
@@ -52,9 +54,10 @@ class HighlakesSpider(scrapy.Spider):
         td_data = response.xpath("//table[@cellspacing='2']//td/text()").extract()
         p_data = response.xpath("//table[@cellspacing='2']//p/text()").extract()
         lake_item['name'] = td_data[0]
+        lake_item['url'] = response.url
         lake_item['size'] = re.sub(r'[^\d\.]', '', td_data[-1])
         lake_item['altitude'] = re.sub(r'[^\d\.]', '', td_data[-2])
-        lake_item['county'] = td_data[-3]
+        lake_item['county'] = self.process_county(td_data[-3])
         lake_item['latitude'] = re.sub(r'[^\d\.\-]', '', p_data[1])
         lake_item['longitude'] = re.sub(r'[^\d\.\-]', '', p_data[2])
 
@@ -62,21 +65,50 @@ class HighlakesSpider(scrapy.Spider):
         # # DO STOCKING FOR MULTIPLE FISH
         # stocking_data['date'] = td_data[1]
         # stocking_data['amount'] = td_data[2]
-        # # stocked = []
-        # # i = -1
-        # # for fish in response.xpath("//table[@cellspacing='2']//strong"):
-        # #     i+=2
-        # #     while td_data[i] != u'\xa0' and td_data[i+1] != u'\xa0':
-        # #         stock = StockingItem()
-        # #         stock.fish = fish.xpath("./text()").extract()[0]
-        # #         stock.date = datetime.datetime.strptime(str(td_data[i]), '%b %d, %Y')
-        # #         stock.amt = td_data[i+1]
-        # #         stocked.append(str(stock))
-        # #         i+=2
-        # # lake_item['stocking_info'] = stocked
+        stocked = []
+        i = -1
+        for fish in response.xpath("//table[@cellspacing='2']//strong"):
+            i+=2
+            while td_data[i] != u'\xa0' and td_data[i+1] != u'\xa0':
+                stock = StockingDataItem()
+                stock['url'] = response.url
+                stock['lake'] = lake_item.save()
+                stock['fish'] = self.process_fish(fish.xpath("./text()").extract()[0])
+                stock['date'] = datetime.datetime.strptime(str(td_data[i]), '%b %d, %Y')
+                stock['amount'] = int(td_data[i+1].replace(',',''))
+                stock.save()
+                i+=2
         #
         # lake_item = self.rank(lake_item)
         yield lake_item
+
+    def process_fish(self, fish):
+        if fish != '':
+            find = Fish.objects.all().filter(name=fish)
+            if len(find) > 0:
+                return find[0]
+            else:
+                item = FishItem()
+                item['name'] = fish
+                item.save()
+                return item
+        return None
+
+    def process_county(self, county):
+        if county != '':
+            split = county.split(' ')
+            if len(split) > 1:
+                find = County.objects.all().filter(name=split[0])
+                # the county exists
+                if len(find) > 0:
+                    return find[0]
+                # in case the state decides to make a goddamn new county
+                else:
+                    item = CountyItem()
+                    item['name'] = split[0]
+                    item.save()
+                    return item
+        return None
 
     def rank(self, lake_item):
         amt = float(str(lake_item['last_stocked_amt']).replace(',', ''))
