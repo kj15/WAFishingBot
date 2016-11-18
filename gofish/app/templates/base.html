@@ -1,33 +1,25 @@
 {% extends 'bootstrap.html' %}
 
 {% load bootstrap3 %}
+{% load static %}
 
 {% block title %}GoFish{% endblock %}
 
 {% block bootstrap3_extra_head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/static/css/default.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-slider.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVy4b6K62PpbfprJp8-4PTTk-ed9pV3Rc&v=3."></script>
-{% endblock %}
-
-{% block bootstrap3_extra_script %}
-    <script src="/static/js/map.js"></script>
+    <script src="/static/js/bootstrap-slider.js"></script>
 {% endblock %}
 
 {% block bootstrap3_content %}
      <!-- Fixed navbar -->
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#">GoFish</a>
-            </div>
-          </div>
-        </nav>
+    {% include 'navbar.html' %}
     <div id="map-canvas"></div>
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+    <script src="/static/js/map.js"></script>
 {% endblock %}

@@ -1,9 +1,27 @@
 html, body {
     height: 100%;
-    width:100%
+    width:100%;
     margin: 0;
     padding: 0;
 }
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+   .search-box { width: 300px; !important }
+
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .search-box { width: 450px !important; }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .search-box { width: 600px !important; }
+}
+
+
 
 
 	#map-canvas {
@@ -12,4 +30,44 @@ html, body {
         left: 0;
         position: relative;
         top: 0;
+        z-index: 1000;
 	}
+
+
+.form-inline {
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+.navbar-inverse.nav-upper {
+  height: 50px;
+}
+.navbar-inverse.nav-upper ul {
+  float: right;
+  display: table;
+}
+.navbar-inverse.nav-upper .navbar-upper > li {
+  display: table-cell;
+  font-size: 14px;
+}
+.navbar-inverse.nav-upper .navbar-upper > li {
+  color: #000;
+}
+.navbar-inverse {
+    background-color: rgba(255,255,255,.95);
+    border: 0;
+}
+@media (min-width: 768px) {
+  .navbar.navbar-lower .navbar-nav {
+    margin-left: 100px;
+  }
+}
+.navbar-upper {
+    -webkit-transition: all .4s ease !important;
+    transition: all .4s ease;
+}
+.form-group {
+    display: block !important;
+}
+
+
+

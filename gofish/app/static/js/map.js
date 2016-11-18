@@ -1,9 +1,11 @@
+'use strict';
+
 var map;
 
 function initialize() {
-    var lat = 47.5569369
-    var long = -122.7855197
-    var zoom = 17
+    var lat = 47.5846913
+    var long = -121.4482443
+    var zoom = 8
     var isIE = navigator.userAgent.toLowerCase().indexOf('trident') > -1;
 
   var start = new google.maps.LatLng(lat,long)
@@ -18,3 +20,44 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+$(document).ready(function() {
+    var focusOutIDs = [
+        '#map-canvas',
+    ]
+    sliders();
+    bindings();
+
+
+    function sliders() {
+        $('#size').slider({});
+        $('#altitude').slider({});
+        $('#rank').slider({});
+//        $('#size').on('slide', function(event) {
+//            $('#size-val').text(event.value);
+//        });
+    }
+
+
+    function bindings() {
+        //Navbar growth on search focus
+        $('#main-nav input').on('focus', function(){
+            if(!$('#navbar-lower').hasClass('collapse in')) {
+                $('#collapse').trigger('click');
+            }
+        });
+
+        //Navbar shrink on search focusout
+        $(function() {
+            $(focusOutIDs.join(' ')).on('click', function(event) {
+                //not collapsed
+                if($('#navbar-lower').hasClass('collapse in')) {
+                    $('#collapse').trigger('click');
+                }
+
+            });
+        })
+
+    }
+
+})
