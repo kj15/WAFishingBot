@@ -133,6 +133,7 @@ def get_query_defaults(request):
     if request.method == 'GET':
         stats = LakeStats.objects.all()[0]
         defaults = dict(
+            total = stats.total,
             rank = 50,
             name ='Goin fishin!',
             county = 'All',
@@ -141,7 +142,7 @@ def get_query_defaults(request):
             maxSize = int(stats.max_size),
             minAlt = int(stats.min_alt),
             maxAlt = int(stats.max_alt),
-            countyList =  ','.join([c.name for c in County.objects.all()]),
+            countyList = ','.join([c.name for c in County.objects.all()]),
             fishList = ','.join([f.name for f in Fish.objects.all()]),
             # countyList = json.dumps([c.name for c in County.objects.all()]),
             # fishList = json.dumps([f.name for f in Fish.objects.all()]),

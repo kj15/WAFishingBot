@@ -2,11 +2,12 @@
 
 //Globals
 var map;
-
+var sizeSlider = $('#size').slider({});
+var altSlider = $('#altitude').slider({});
+var rankSlider = $('#rank').slider({});
 
 //Pre-load
 setQueryDefaults();
-
 
     function setQueryDefaults() {
         $.ajax({
@@ -14,8 +15,24 @@ setQueryDefaults();
 			type: "GET",
 			dataType: "html",
 			success: function (data) {
-                $('#rank').val(data.rank);
-                //$('#county').val()
+			    data = JSON.parse(data);
+			    console.log(data);
+			    //show top
+			    var rank = $('#rank');
+			    rankSlider.slider('setValue', data.rank);
+			    rankSlider.slider('setAttribute', 'max', data.total);
+
+                //county options
+                var county = $('#county');
+                var countyList = data.countyList.split(',');
+                function addCountyOption(c) {
+                    if(c == data.county) { county.append("<option selected value=" + c + ">" + c + "</option>");}
+                    else { county.append("<option value=" + c + ">" + c + "</option>");}
+                }
+                addCountyOption('All');
+                $.each(countyList, function(i,v) {
+                    addCountyOption(v);
+                });
 			},
 			error: function (data) {
 				console.log("Failure");
@@ -48,14 +65,14 @@ $(document).ready(function() {
         '#map-canvas',
     ]
 
-    sliders();
+    //sliders();
     bindings();
 
 
     function sliders() {
-        $('#size').slider({});
-        $('#altitude').slider({});
-        $('#rank').slider({});
+        sizeSlider = $('#size').slider({});
+        altSlider = $('#altitude').slider({});
+        rankSlider = $('#rank').slider({});
 //        $('#size').on('slide', function(event) {
 //            $('#size-val').text(event.value);
 //        });
