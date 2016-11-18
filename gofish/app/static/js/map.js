@@ -16,23 +16,43 @@ setQueryDefaults();
 			dataType: "html",
 			success: function (data) {
 			    data = JSON.parse(data);
-			    console.log(data);
+			    
+                //search
+                $('#search').attr('placeholder', data.name);
+
 			    //show top
-			    var rank = $('#rank');
 			    rankSlider.slider('setValue', data.rank);
 			    rankSlider.slider('setAttribute', 'max', data.total);
 
-                //county options
-                var county = $('#county');
-                var countyList = data.countyList.split(',');
-                function addCountyOption(c) {
-                    if(c == data.county) { county.append("<option selected value=" + c + ">" + c + "</option>");}
-                    else { county.append("<option value=" + c + ">" + c + "</option>");}
-                }
-                addCountyOption('All');
-                $.each(countyList, function(i,v) {
-                    addCountyOption(v);
-                });
+                //size
+                sizeSlider.slider('setAttribute', 'max', data.maxSize);
+                sizeSlider.slider('setAttribute', 'min', data.minSize);
+                sizeSlider.slider('setValue', [data.minSize,data.maxSize]);
+
+                //size
+                altSlider.slider('setAttribute', 'max', data.maxAlt);
+                altSlider.slider('setAttribute', 'min', data.minAlt);
+                altSlider.slider('setValue', [data.minAlt,data.maxAlt]);
+
+                //select options
+                function addSelectOptions(s) {
+                    var select = $('#' + s);
+                    var list = data[s + 'List'].split(',');
+                    function addOption(o) {
+                        if(o == data[s]) { select.append("<option selected value=" + o + ">" + o + "</option>");}
+                        else { select.append("<option value=" + o + ">" + o + "</option>");}
+                    }
+                    addOption('All');
+                    $.each(list, function(i,v) {
+                        addOption(v);
+                    });
+                 }
+
+                 //county
+                 addSelectOptions('county');
+
+                 //fish
+                 addSelectOptions('fish');
 			},
 			error: function (data) {
 				console.log("Failure");
