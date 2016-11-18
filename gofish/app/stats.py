@@ -25,6 +25,8 @@ def get_stats():
         setattr(stats, 'min_' + x, min(eval(x)))
         setattr(stats, 'avg_' + x, sum(eval(x)) / len (eval(x)))
         setattr(stats, 'max_' + x, max(eval(x)))
+    stats.total = len(lakes)
+    stats.last_updated = datetime.date.today()
     stats.save()
 
 

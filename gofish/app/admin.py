@@ -21,7 +21,7 @@ class LakeAdmin(admin.ModelAdmin):
 
 @admin.register(LakeStats)
 class LakeStatsAdmin(admin.ModelAdmin):
-    list_display = ('min_size', 'avg_size', 'max_size', 'min_alt', 'avg_alt', 'max_alt')
+    list_display = ('last_updated', 'total', 'min_size', 'avg_size', 'max_size', 'min_alt', 'avg_alt', 'max_alt')
 
 admin.site.register(Fish)
 admin.site.register(County)

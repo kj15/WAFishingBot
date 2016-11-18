@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from django.core.exceptions import *
 
-from models import Lake, StockingData, Fish, County
+from models import Lake, StockingData, Fish, County, LakeStats
 
 from django.template import Context, loader
 from django.views.generic.base import TemplateView
@@ -131,13 +131,23 @@ def get_lakes_with_query(request):
 
 def get_query_defaults(request):
     if request.method == 'GET':
+        stats = LakeStats.objects.all()[0]
         defaults = dict(
             rank = 50,
             name ='Goin fishin!',
             county = 'All',
             fish = 'All',
-            minSize = 0,
-
+            minSize = int(stats.min_size),
+            maxSize = int(stats.max_size),
+            minAlt = int(stats.min_alt),
+            maxAlt = int(stats.max_alt),
+            countyList =  ','.join([c.name for c in County.objects.all()]),
+            fishList = ','.join([f.name for f in Fish.objects.all()]),
+            # countyList = json.dumps([c.name for c in County.objects.all()]),
+            # fishList = json.dumps([f.name for f in Fish.objects.all()]),
         )
+        return HttpResponse(json.dumps(defaults))
+    else:
+        return HttpResponse("GET requests only yo")
 
 

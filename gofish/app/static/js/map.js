@@ -1,6 +1,28 @@
 'use strict';
 
+//Globals
 var map;
+
+
+//Pre-load
+setQueryDefaults();
+
+
+    function setQueryDefaults() {
+        $.ajax({
+			url: "/api/query/defaults",
+			type: "GET",
+			dataType: "html",
+			success: function (data) {
+                $('#rank').val(data.rank);
+                //$('#county').val()
+			},
+			error: function (data) {
+				console.log("Failure");
+			}
+		});
+    }
+
 
 function initialize() {
     var lat = 47.5846913
@@ -25,6 +47,7 @@ $(document).ready(function() {
     var focusOutIDs = [
         '#map-canvas',
     ]
+
     sliders();
     bindings();
 
@@ -37,7 +60,6 @@ $(document).ready(function() {
 //            $('#size-val').text(event.value);
 //        });
     }
-
 
     function bindings() {
         //Navbar growth on search focus

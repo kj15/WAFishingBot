@@ -47,12 +47,17 @@ class StockingData(models.Model):
     def __unicode__(self):
         return str(self.date) + ": " + self.fish.name + " (" + str(self.amount) + ")"
 
+
 class LakeStats(models.Model):
     id = models.AutoField(primary_key=True)
     last_updated = models.DateField(blank=True, null=True, default=datetime.date.today)
+    total = models.IntegerField(blank=True, null=True)
     min_size = models.FloatField(blank=True, null=True)
     avg_size = models.FloatField(blank=True, null=True)
     max_size = models.FloatField(blank=True, null=True)
     min_alt = models.FloatField(blank=True, null=True)
     avg_alt = models.FloatField(blank=True, null=True)
     max_alt = models.FloatField(blank=True, null=True)
+
+    def __unicode__(self):
+        return str(self.last_updated)
