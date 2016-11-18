@@ -71,7 +71,7 @@ def get_lakes_with_query(request):
             query['name__contains'] = request.POST['name']
 
         # county
-        if 'county' in request.POST and request.POST['county'] != '':
+        if 'county' in request.POST and request.POST['county'] not in ['', 'All']:
             try:
                 county = County.objects.all().get(name=request.POST['county'])
             except ObjectDoesNotExist:
@@ -127,3 +127,17 @@ def get_lakes_with_query(request):
             return HttpResponse(serializers.serialize("json", filtered[:limit] if limit != 0 else filtered))
     else:
         return HttpResponse("POST requests only yo")
+
+
+def get_query_defaults(request):
+    if request.method == 'GET':
+        defaults = dict(
+            rank = 50,
+            name ='Goin fishin!',
+            county = 'All',
+            fish = 'All',
+            minSize = 0,
+
+        )
+
+

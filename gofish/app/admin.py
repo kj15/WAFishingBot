@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Lake, Fish, County, StockingData
+from .models import Lake, Fish, County, StockingData, LakeStats
 
 # Register your models here.
 
@@ -17,6 +17,11 @@ class LakeAdmin(admin.ModelAdmin):
 
     def get_stocking(self, obj):
         return "\n".join(["[" + str(a.date) + "] : " + str(a.amount) for a in StockingData.objects.all().filter(lake=obj)])
+
+
+@admin.register(LakeStats)
+class LakeStatsAdmin(admin.ModelAdmin):
+    list_display = ('min_size', 'avg_size', 'max_size', 'min_alt', 'avg_alt', 'max_alt')
 
 admin.site.register(Fish)
 admin.site.register(County)
