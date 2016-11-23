@@ -2,6 +2,8 @@
 
 //Globals
 var map;
+var markers = [];
+var infoWindow;
 var sizeSlider = $('#size').slider({});
 var altSlider = $('#altitude').slider({});
 var rankSlider = $('#rank').slider({});
@@ -16,7 +18,7 @@ setQueryDefaults();
 			dataType: "html",
 			success: function (data) {
 			    data = JSON.parse(data);
-			    
+
                 //search
                 $('#search').attr('placeholder', data.name);
 
@@ -53,11 +55,25 @@ setQueryDefaults();
 
                  //fish
                  addSelectOptions('fish');
+
+                 showInitialLakes();
 			},
 			error: function (data) {
 				console.log("Failure");
 			}
 		});
+    }
+
+    function getQueryValues() {
+        return  {
+                name: $('#search').val(),
+                county: $('#county option:selected').text(),
+                minSize: sizeSlider.slider('getValue')[0],
+                maxSize: sizeSlider.slider('getValue')[1],
+                minAlt: altSlider.slider('getValue')[0],
+                maxAlt: altSlider.slider('getValue')[1],
+                limit: rankSlider.slider('getValue'),
+		}
     }
 
 
@@ -75,8 +91,37 @@ function initialize() {
   }
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
 }
+
+
+    function addMarkerToMap(lat, long) {
+        var marker = new google.maps.Marker ({
+            position: new google.maps.LatLng(lat, long),
+            title: '',
+        });
+        marker.setMap(map);
+        markers.push(marker);
+    }
+
+    function showInitialLakes() {
+        var values = getQueryValues();
+        $.ajax({
+			url: "/api/lakes/query",
+			type: "POST",
+			data: values,
+			dataType: "json",
+			success: function (data) {
+			    console.log(data);
+			    $.each(data, function(i, v) {
+                    addMarkerToMap(v.fields.latitude, v.fields.longitude);
+			    });
+			},
+			error: function (data) {
+				console.log("Failure");
+			}
+		});
+    }
+
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -87,7 +132,7 @@ $(document).ready(function() {
 
     //sliders();
     bindings();
-
+    //showInitialLakes();
 
     function sliders() {
         sizeSlider = $('#size').slider({});
@@ -117,6 +162,13 @@ $(document).ready(function() {
             });
         })
 
+        //SEARCH/QUERYING!~!~!~!~!~!~!
+        $("#form-search").submit(function(e) {
+            e.preventDefault();
+            var data = {
+
+            }
+        });
     }
 
-})
+});
