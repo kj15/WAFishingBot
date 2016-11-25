@@ -9,6 +9,7 @@ var altSlider = $('#altitude').slider({});
 var rankSlider = $('#rank').slider({});
 
 //Pre-load
+initialize();
 setQueryDefaults();
 
     function setQueryDefaults() {
@@ -56,7 +57,7 @@ setQueryDefaults();
                  //fish
                  addSelectOptions('fish');
 
-                 showInitialLakes();
+                 getLakesByQuery();
 			},
 			error: function (data) {
 				console.log("Failure");
@@ -66,13 +67,13 @@ setQueryDefaults();
 
     function getQueryValues() {
         return  {
-                name: $('#search').val(),
-                county: $('#county option:selected').text(),
-                minSize: sizeSlider.slider('getValue')[0],
-                maxSize: sizeSlider.slider('getValue')[1],
-                minAlt: altSlider.slider('getValue')[0],
-                maxAlt: altSlider.slider('getValue')[1],
-                limit: rankSlider.slider('getValue'),
+            name: $('#search').val(),
+            county: $('#county option:selected').text(),
+            minSize: sizeSlider.slider('getValue')[0],
+            maxSize: sizeSlider.slider('getValue')[1],
+            minAlt: altSlider.slider('getValue')[0],
+            maxAlt: altSlider.slider('getValue')[1],
+            limit: rankSlider.slider('getValue'),
 		}
     }
 
@@ -91,16 +92,23 @@ function initialize() {
   }
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+  console.log('initialized map');
 }
 
 
-    function addMarkerToMap(lat, long) {
+    function addMarkerToMap(lake, lat, long) {
         var marker = new google.maps.Marker ({
             position: new google.maps.LatLng(lat, long),
             title: '',
         });
         marker.setMap(map);
-        markers.push(marker);
+        markers.push({ lake: lake, marker: marker});
+    }
+
+    function resetMap() {
+        $.each(markers, function(i,v) {
+            v.marker.setMap(null);
+        });
     }
 
     function showInitialLakes() {
@@ -111,9 +119,8 @@ function initialize() {
 			data: values,
 			dataType: "json",
 			success: function (data) {
-			    console.log(data);
 			    $.each(data, function(i, v) {
-                    addMarkerToMap(v.fields.latitude, v.fields.longitude);
+                    addMarkerToMap(v, v.fields.latitude, v.fields.longitude);
 			    });
 			},
 			error: function (data) {
@@ -122,14 +129,58 @@ function initialize() {
 		});
     }
 
+    function getLakesByQuery() {
+        var values = getQueryValues();
+        $.ajax({
+			url: "/api/lakes/query",
+			type: "POST",
+			data: values,
+			dataType: "json",
+			success: function (data) {
+			    console.log(data);
+			    resetMap();
+			    $.each(data, function(i, v) {
+                    addMarkerToMap(v, v.fields.latitude, v.fields.longitude);
+                });
+			    //empty map, just add all
+//			    if(markers.length == 0) {
+//                    $.each(data, function(i, v) {
+//                        addMarkerToMap(v, v.fields.latitude, v.fields.longitude);
+//                    });
+//                }
+//                else {
+//                    console.log(markers);
+//                    $.each(markers, function(i, v) {
+//                        var find = $.grep(data, function(d) { return d.pk == v.lake.pk });
+//                        if(find !== undefined) {
+//
+//                        }
+//                    });
+//
+//                    $.each(data, function(i, v) {
+//                        var find = $.grep(markers, function(m) { return m.lake.pk == v.pk });
+//                        if(find === undefined) {
+//
+//                        }
+//                    });
+//                }
+			},
+			error: function (data) {
+				console.log("Failure");
+			}
+		});
+    }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+
+//google.maps.event.addDomListener(window, 'load', initialize);
 
 $(document).ready(function() {
     var focusOutIDs = [
         '#map-canvas',
     ]
-
+    $.each(markers, function(i,v) {
+        v.setMap(map);
+    });
     //sliders();
     bindings();
     //showInitialLakes();
@@ -165,9 +216,8 @@ $(document).ready(function() {
         //SEARCH/QUERYING!~!~!~!~!~!~!
         $("#form-search").submit(function(e) {
             e.preventDefault();
-            var data = {
-
-            }
+            getLakesByQuery();
+            $('#collapse').trigger('click');
         });
     }
 
