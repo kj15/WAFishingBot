@@ -10,7 +10,7 @@ from app.models import Lake, LakeStats
 
 
 def get_stats():
-    lakes = Lake.objects.all()
+    lakes = Lake.objects.all().filter(rank__gt=0.0)
     find = LakeStats.objects.all()
     size = []
     alt = []
