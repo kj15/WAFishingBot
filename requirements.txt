@@ -1,0 +1,4 @@
+Scrapy>=0.24.5
+Django>=1.8
+django-boostrap3
+scrapy-djangoitem
